@@ -1,4 +1,5 @@
-const calibration_document = `eightqrssm9httwogqshfxninepnfrppfzhsc
+const day01_part02 = () => {
+  const calibration_document = `eightqrssm9httwogqshfxninepnfrppfzhsc
 one111jxlmc7tvklrmhdpsix
 bptwone4sixzzppg
 ninezfzseveneight5kjrjvtfjqt5nineone
@@ -999,27 +1000,75 @@ drkdbmv4zbjbznsqtj
 eightbqfhnmvqsoneninezbrzcqkz4ftv
 1eightcrcjcbdthreebscfpvznqfrj6`;
 
-const array = calibration_document.split("\n");
-let result = 0;
-let sequnece = [];
+  const array = calibration_document.split("\n");
+  let result = 0;
+  let sequnece = [];
 
-array.forEach((element) => {
-  text_array = [...element];
-  const first_digit = text_array.find((char) => {
-    return !isNaN(Number(char));
+  const word_digits = [
+    { string: "one", number: 1 },
+    { string: "two", number: 2 },
+    { string: "three", number: 3 },
+    { string: "four", number: 4 },
+    { string: "five", number: 5 },
+    { string: "six", number: 6 },
+    { string: "seven", number: 7 },
+    { string: "eight", number: 8 },
+    { string: "nine", number: 9 },
+  ];
+
+  array.forEach((element) => {
+    const all_digits_in_text = [];
+
+    text_array = [...element];
+    text_array_reverse = [...element].reverse(); // when array is reverse, index of first letter of word is from idexOf text_array
+
+    let first_digit;
+    text_array_reverse.forEach((char) => {
+      if (!isNaN(Number(char))) {
+        first_digit = { digit: char, id: text_array.indexOf(char) };
+      }
+    });
+
+    let second_digit;
+    text_array.forEach((char, index) => {
+      if (!isNaN(Number(char))) {
+        second_digit = { digit: char, id: index };
+      }
+    });
+
+    word_digits.forEach(({ string, number }) => {
+      if (element.includes(string)) {
+        all_digits_in_text.push({
+          digit: number,
+          id: element.indexOf(string), //index of first letter of word
+        });
+        if (element.indexOf(string) !== element.lastIndexOf(string)) {
+          all_digits_in_text.push({
+            digit: number,
+            id: element.lastIndexOf(string), //index of last letter of word
+          });
+        }
+      }
+    });
+
+    if (first_digit) all_digits_in_text.push(first_digit);
+    if (second_digit) all_digits_in_text.push(second_digit);
+
+    all_digits_in_text.sort((a, b) => a.id - b.id);
+
+    sequnece.push(
+      `${all_digits_in_text[0].digit}${
+        all_digits_in_text[all_digits_in_text.length - 1].digit
+      }`
+    );
   });
 
-  text_array_reverse = [...element].reverse();
-  const second_digit = text_array_reverse.find((char) => {
-    return !isNaN(Number(char));
+  sequnece.forEach((element) => {
+    result += Number(element);
   });
 
-  sequnece.push(`${first_digit}${second_digit}`);
-});
+  document.querySelector(".day01_part02 .result").innerText = result;
+  console.log(result);
+};
 
-sequnece.forEach((element) => {
-  result += Number(element);
-});
-
-document.querySelector(".day01 .result").innerText = result;
-console.log(result);
+day01_part02();
